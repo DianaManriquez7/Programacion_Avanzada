@@ -34,81 +34,87 @@ import os
 
 
 class SensorTemperatura:
-    def __init__ (self, TempControl, TemperaturaActual, Tmax, Tmin):
-       self.TempControl = TempControl  #Datos que solo son de la clase
+    def __init__ (self, TemperaturaActual, Tmax, Tmin):
+    #Datos que solo son de la clase
        self.TemperaturaActual = TemperaturaActual
        self.Tmax = Tmax
        self.Tmin = Tmin
        
-    def Temp(self):  #Metodo
-        if self.TemperaturaActual > self.Tmax:
-            self.TemperaturaActual -= self.TempControl
-        elif self.TemperaturaActual < self.Tmin:
-            self.TemperaturaActual += self.TempControl
+    def Actualizar_Temp(self, NuevaTemp):  #Metodo
+        self.TemperaturaActual = NuevaTemp
             
-        return self.TemperaturaActual
-    def obtener_temperatura(self):
-        # Retorna las posiciones actuales de las articulaciones
-        return {
-            "TempeActual": self.TempeActual
-        }
 
 
 class SensorHumedad:
-    def __init__ (self, HumControl, HumActual, Valvula, Hmax, Hmin): #Constructor
-        self.HumControl = HumControl   #Riego
+    def __init__ (self, HumActual, Valvula, Hmax, Hmin): #Constructor
+    #Riego
         self.HumActual = HumActual
         self.Valvula = Valvula
         self.Hmax = Hmax
         self.Hmin = Hmin
-    def Hum(self):
-        if self.HumActual > self.Hmax:
-            self.HumActual -= self.HumControl
-            self.Valvula = False
-        elif self.HumActual < self.Hmin:
-            self.HumActual += self.HumControl
-            self.Valvula = True
+        
+    def Actualizacion_Hum(self, NuevaHum):
+        self.HumActual=NuevaHum
             
 class SensorLuz:
-    def __init__ (self, LuzControl, LuzActual, venti, Lmax, Lmin):
-        self.LuzControl = LuzControl
-        self.LuzActual = LuzActual
-        self.venti = venti
-        self.Lmax = Lmax
-        self.Lmin = Lmin
-    def Luzz(self):
-        if self.LuzActual > self.Lmax:
-            self.LuzActual -= self.LuzControl
-            self.venti = True
-        elif self.LuzActual < self.Lmin:
-            self.LuzActual += self.LuzControl
-            self.venti = False
+    def __init__ (self, LuzEstado):
+        self.LuzEstado = LuzEstado
+        
+    def Actualizacion_Luz(self, NuevoLuz):
+        self.LuzEstado=NuevoLuz
+        
             
-#Para temperatura
-SensorT= SensorTemperatura(1,10,30,15) #Objeto
-Temperatura=SensorT.Temp()   #Metodo con el objeto
-print(Temperatura)
+class Invernadero:
+    def __init__(self):
+        self.SenTemp=SensorTemperatura(16)#Temperatura inicial
+        self.SenHum=SensorHumedad(30)
+        self.SensLuz=SensorLuz(False)
+        self.Valvula(False)
+        
+    def ControlInv(self):
+        #Para sensor de temperartura
+        if self.SenTemp.TemperaturaActual < self.SenTemp.Tmin:
+            print("Subiendo temperatura")
+            self.SenTemp.Actualizar_Temp(self.SenTemp.TemperaturaActual + 1)
 
-#Para humedad
-SensorH= SensorHumedad(1,10,100,0) #Objeto
-Humedad=SensorH.Hum()   #Metodo con el objeto
-print(Humedad)
+        elif self.SenTemp.TemperaturaActual > self.SenTemp.Tmax:
+            print("Disminuyendo temperatura")
+            self.SenTemp.Actualizar_Temp(self.SenTemp.TemperaturaActual - 1)
+        
+        #Para sensor de Humedad
+        if self.SenHum.HumActual < self.SenHum.Hmin:
+            print("Activar riego")
+            self.SenHum.Actualizar_Hum(self.SenHum.HumActualActualActual + 1)
+            self.Valvula=True
 
-#Para Luz
-SensorL= SensorLuz(1,10,30,15) #Objeto
-Luz=SensorL.Luzz()   #Metodo con el objeto
-print(Humedad)
-
-
-class ManejoArchivo:
-               
+        elif self.SenTemp.HumActual > self.SenHum.Hmax:
+            print("Desactivando el riego")
+            self.SenHum.Actualizar_Hum(self.SenHum.HumActual - 1)
+            self.Valvula=False
+        
+        #Para Luz
+        if self.SenTemp.TemperaturaActual > self.SenTemp.Tmax and self.SensLuz.LuzEstado==False:
+            print("Luz Activada")
+            self.SensLuz==True
+            
+        elif self.SenTemp.TemperaturaActual < self.SenTemp.Tmin and self.SensLuz.LuzEstado==True:
+            print("Luz Desactivada")
+            self.SensLuz==False
+       
+        return{  
+        "Temperatura":self.SenTemp.TemperaturaActual,
+        "Humedad":self.SenHum.HumActual,
+        "Luz":self.SensLuz.LuzEstado
+        }
+#Altas,Bajas,Modificaciones,Consultas
+class ManejoArchivos:
     def __init__(self, archivo):
         self.archivo = archivo
         # Crear archivo si no existe
         if not os.path.exists(self.archivo):
             with open(self.archivo, 'w') as f:
                 json.dump([], f)
-
+    
     def alta(self, datos):
         # Cargar los datos existentes
         with open(self.archivo, 'r') as f:
@@ -118,7 +124,7 @@ class ManejoArchivo:
         # Guardar los cambios
         with open(self.archivo, 'w') as f:
             json.dump(registros, f, indent=4)
-
+            
     def baja(self, indice):
         # Cargar los datos existentes
         with open(self.archivo, 'r') as f:
@@ -147,20 +153,19 @@ class ManejoArchivo:
             registros = json.load(f)
         return registros
 
+#Menu del invernadero
 def mostrar_menu():
-    print("\n Menú Invernadero:")
-    print("1. Alta (Guardar nueva posición)")
-    print("2. Baja (Eliminar una posición por índice)")
-    print("3. Modificación (Modificar una posición por índice)")
-    print("4. Consultas (Mostrar todas las posiciones guardadas)")
+    print("\nMenú del Invernader:")
+    print("1. Alta (Guardar nuevos datos)")
+    print("2. Baja (Eliminar un dato por índice)")
+    print("3. Modificación (Modificar un dato por índice)")
+    print("4. Consultas (Mostrar todos los datos guardados)")
     print("5. Salir")
     return input("Seleccione una opción: ")
 
-
 def main():
-    Temperatura=SensorT.Temp()
-    archivo = ManejoArchivo("Temperatura.json")
-    
+    Invernadero_1 = Invernadero()
+    archivo = ManejoArchivos("Dato.json")
 
     while True:
         opcion = mostrar_menu()
@@ -168,14 +173,16 @@ def main():
         if opcion == "1":  # Alta
             # Captura nuevas posiciones de las articulaciones
             try:
-                TempActual = float(input("Temperatura Actual: "))
-                SensorTemperatura.Temp([TempActual])
-                archivo.alta(Temperatura.Temp())
-                print("Teperatura Actual guardada.")
+                Temper = float(input("Temperatura: "))
+                Humed = float(input("Humedad (%): "))
+                Luzzz = input("Estado de la Luz: ")
                 
-                HumeActual = float(input("Temperatura Actual: "))
-                SensorHumedad.Hum([HumeActual])
-                archivo.alta(Humedad.Hum())
+                Invernadero_1.SenTemp.Actualizar_Temp(Temper)
+                Invernadero_1.SenHum.Actualizar_Hum(Humed)
+                Invernadero_1.SensLuz.Actualizar_Luz(Luzzz)
+                
+                archivo.alta(Invernadero())
+                print("Datos guardados exitosamente.")
             except ValueError:
                 print("Error: Por favor ingrese valores numéricos válidos.")
 
@@ -183,7 +190,7 @@ def main():
             try:
                 indice = int(input("Ingrese el índice de la posición que desea eliminar: "))
                 archivo.baja(indice)
-                print("Posición eliminada exitosamente.")
+                print("Dato eliminado exitosamente.")
             except ValueError:
                 print("Error: Ingrese un índice válido.")
             except IndexError:
@@ -192,25 +199,26 @@ def main():
         elif opcion == "3":  # Modificación
             try:
                 indice = int(input("Ingrese el índice de la posición que desea modificar: "))
-                pos_hombro = float(input("Nuevo ángulo del hombro: "))
-                pos_codo = float(input("Nuevo ángulo del codo: "))
-                pos_muneca = float(input("Nuevo ángulo de la muñeca: "))
-                pos_pinza = float(input("Nuevo ángulo de la pinza: "))
-                brazo.mover_a_posicion([pos_hombro, pos_codo, pos_muneca, pos_pinza])
-                archivo.modificar(indice, brazo.obtener_posiciones())
-                print("Posición modificada exitosamente.")
+                temper=float(input("Nueva Temperatura: "))
+                humed=float(input("Nueva Humedad(%): "))
+                luzzz=input("Nuevo estado de la Luz: ")
+                
+                Invernadero_1.SenTemp.Actualizar_Temp(temper)
+                Invernadero_1.SenHum.Actualizar_Hum(humed)
+                Invernadero_1.SensLuz.Actualizar_Luz(luzzz)
+                print("Datos modificados exitosamente.")
             except ValueError:
                 print("Error: Ingrese valores numéricos válidos.")
             except IndexError:
                 print("Error: Índice fuera de rango.")
 
         elif opcion == "4":  # Consultas
-            posiciones = archivo.consultar()
-            if posiciones:
-                for i, pos in enumerate(posiciones):
-                    print(f"Posición {i}: Hombro={pos['hombro']}, Codo={pos['codo']}, Muñeca={pos['muneca']}, Pinza={pos['pinza']}")
+            Datos = archivo.consultar()
+            if Datos:
+                for i, dato in enumerate(Datos):
+                    print(f"Datos {i}: Temperatura(°C) = {dato['Temperatura']}, Humedad(%) = {dato['Humedad']}, Luz(estado)={dato['Luz']})
             else:
-                print("No hay posiciones guardadas.")
+                print("No hay datos guardados.")
 
         elif opcion == "5":  # Salir
             print("Saliendo del programa.")
@@ -218,3 +226,10 @@ def main():
 
         else:
             print("Opción no válida. Por favor seleccione una opción del menú.")
+
+
+
+
+
+
+
