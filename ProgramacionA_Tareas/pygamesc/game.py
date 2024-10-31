@@ -31,6 +31,7 @@ en_suelo = True
 # Variables de desplazamiento 
 izquierda=False
 derecha=False
+dezplazamiento_vel = 10
 ################################
 
 # Variables de pausa y menú
@@ -130,14 +131,17 @@ def manejar_salto():
 #######################################
 #Funcion para dezplazamiento
 def manejar_desplazamiento():
-    global jugador, derecha, izquierda
+    global jugador, derecha, izquierda, derecha, desplazamiento_vel
     
     if izquierda:
-        jugador.x -= 600
+        jugador.x -= desplazamiento_vel
+        if jugador.x <= 50:
+            jugador.x = 50 
         
-        if jugador.x >= w - 750:
-            jugador.x = w - 750
-            izquierda = False
+    if derecha:
+        jugador.x += desplazamiento_vel
+        if jugador.x >= 100:
+            jugador.x = 100
 ###################################
 
 
@@ -194,7 +198,7 @@ def update():
          bala2.y -= velocidad_bala2
     
      # Si la bala sale de la pantalla, reiniciar su posición
-    if bala2.y < 0:
+    if bala2.y > 400:
          reset_bala2()
     
     pantalla.blit(bala2_img, (bala2.x, bala2.y))
@@ -253,7 +257,7 @@ def reiniciar_juego():
     menu_activo = True  # Activar de nuevo el menú
     jugador.x, jugador.y = 50, h - 100  # Reiniciar posición del jugador
     bala.x = w - 50  # Reiniciar posición de la bala
-    bala2.x = w - 750
+    bala2.y = w - 750
     nave.x, nave.y = w - 100, h - 100  # Reiniciar posición de la nave
     bala_disparada = False
     bala2_disparada =  False
@@ -265,7 +269,7 @@ def reiniciar_juego():
     mostrar_menu()  # Mostrar el menú de nuevo para seleccionar modo
 
 def main():
-    global salto, en_suelo, bala_disparada, bala2_disparada
+    global salto, en_suelo, bala_disparada, bala2_disparada, izquierda, derecha
 
     reloj = pygame.time.Clock()
     mostrar_menu()  # Mostrar el menú al inicio
@@ -279,12 +283,22 @@ def main():
                 if evento.key == pygame.K_SPACE and en_suelo and not pausa:  # Detectar la tecla espacio para saltar
                     salto = True
                     en_suelo = False
+#######################################################                
+                if evento.type == pygame.KEYUP:
+                    if evento.key == pygame.K_LEFT:
+                        izquierda = True
+                
+                    if evento.key == pygame.K_RIGHT:
+                        derecha = True
+########################################################             
                 if evento.key == pygame.K_p:  # Presiona 'p' para pausar el juego
                     pausa_juego()
                 if evento.key == pygame.K_q:  # Presiona 'q' para terminar el juego
                     print("Juego terminado. Datos recopilados:", datos_modelo)
                     pygame.quit()
                     exit()
+            
+            
 
         if not pausa:
             # Modo manual: el jugador controla el salto
