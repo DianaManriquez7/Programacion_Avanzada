@@ -37,8 +37,8 @@ class SensorTemperatura:
     def __init__ (self, TemperaturaActual, Tmax, Tmin):
     #Datos que solo son de la clase
        self.TemperaturaActual = TemperaturaActual
-       self.Tmax = Tmax
-       self.Tmin = Tmin
+       self.Tmax = 32
+       self.Tmin = 15
        
     def Actualizar_Temp(self, NuevaTemp):  #Metodo
         self.TemperaturaActual = NuevaTemp
@@ -50,8 +50,8 @@ class SensorHumedad:
     #Riego
         self.HumActual = HumActual
         self.Valvula = Valvula
-        self.Hmax = Hmax
-        self.Hmin = Hmin
+        self.Hmax = 80
+        self.Hmin = 20
         
     def Actualizacion_Hum(self, NuevaHum):
         self.HumActual=NuevaHum
@@ -216,7 +216,7 @@ def main():
             Datos = archivo.consultar()
             if Datos:
                 for i, dato in enumerate(Datos):
-                    print(f"Datos {i}: Temperatura(°C) = {dato['Temperatura']}, Humedad(%) = {dato['Humedad']}, Luz(estado)={dato['Luz']})
+                    print(f"Datos {i}: Temperatura(°C) = {dato['Temperatura']}, Humedad(%) = {dato['Humedad']}, Luz(estado) = {dato['Luz']})
             else:
                 print("No hay datos guardados.")
 
