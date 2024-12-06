@@ -1,0 +1,74 @@
+[
+    {
+        "Temperatura": 30.0,
+        "Humedad": 50.0,
+        "Luz": false,
+        "Valvula": false
+    },
+    {
+        "Temperatura": 50.0,
+        "Humedad": 90.0,
+        "Luz": false,
+        "Valvula": false
+    },
+    {
+        "Temperatura": 45.0,
+        "Humedad": 70.0,
+        "Luz": true,
+        "Valvula": false
+    },
+    {
+        "Temperatura": 45.0,
+        "Humedad": 60.0,
+        "Luz": false,
+        "Valvula": false
+    },
+    {
+        "Temperatura": 60.0,
+        "Humedad": 30.0,
+        "Luz": false,
+        "Valvula": false
+    },
+    {
+        "Temperatura": 60.0,
+        "Humedad": 30.0,
+        "Luz": false,
+        "Valvula": false
+    },
+    {
+        "Temperatura": 47.0,
+        "Humedad": 80.0,
+        "Luz": true,
+        "Valvula": false
+    },
+    {
+        "Temperatura": 47.0,
+        "Humedad": 80.0,
+        "Luz": true,
+        "Valvula": false
+    },
+    {
+        "Temperatura": 47.0,
+        "Humedad": 80.0,
+        "Luz": true,
+        "Valvula": false
+    },
+    {
+        "Temperatura": 47.0,
+        "Humedad": 80.0,
+        "Luz": true,
+        "Valvula": false
+    },
+    {
+        "Temperatura": 47.0,
+        "Humedad": 80.0,
+        "Luz": true,
+        "Valvula": false
+    },
+    {
+        "Temperatura": 47.0,
+        "Humedad": 80.0,
+        "Luz": true,
+        "Valvula": false
+    }
+]

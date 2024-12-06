@@ -216,7 +216,7 @@ def main():
             Datos = archivo.consultar()
             if Datos:
                 for i, dato in enumerate(Datos):
-                    print(f"Datos {i}: Temperatura(°C) = {dato['Temperatura']}, Humedad(%) = {dato['Humedad']}, Luz(estado) = {dato['Luz']})
+                    print(f"Datos {i}: Temperatura(°C) = {dato['Temperatura']}, Humedad(%) = {dato['Humedad']}, Luz(estado) = {dato['Luz']}")
             else:
                 print("No hay datos guardados.")
 

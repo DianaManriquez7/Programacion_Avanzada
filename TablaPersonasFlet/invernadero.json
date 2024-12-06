@@ -1,0 +1,14 @@
+[
+    {
+        "Temperatura": 20.0,
+        "Humedad": 50.0,
+        "Valvula": false,
+        "Luz": false
+    },
+    {
+        "Temperatura": 20.0,
+        "Humedad": 50.0,
+        "Valvula": false,
+        "Luz": true
+    }
+]
