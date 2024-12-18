@@ -1,4 +1,4 @@
-import psycopg2
+
 import flet as ft
 import json
 import os
@@ -11,15 +11,19 @@ class SensorTemperatura:
         self.Tmax = Tmax
         self.Tmin = Tmin
 
-    def Actualizar_Temp(self, NuevaTemp):  # Metodo
-        self.TemperaturaActual = NuevaTemp
+    #def Actualizar_Temp(self, NuevaTemp):  # Metodo
+     #   self.TemperaturaActual = NuevaTemp
 
+    def Actualizar_Temp(self, NuevaTemp):
+        if self.Tmin <= NuevaTemp <= self.Tmax:
+            self.TemperaturaActual = NuevaTemp
+        else:
+            print(f"La temperatura {NuevaTemp} está fuera de los límites.")
 
 class SensorHumedad:
-    def __init__(self, HumActual, Valvula, Hmax, Hmin):  # Constructor
+    def __init__(self, HumActual, Hmax, Hmin):  # Constructor
         # Riego
         self.HumActual = HumActual
-        self.Valvula = Valvula
         self.Hmax = Hmax
         self.Hmin = Hmin
 
@@ -37,10 +41,10 @@ class SensorLuz:
 
 class Invernadero:
     def __init__(self):
-        self.SenTemp = SensorTemperatura(0,35,5)  # Temperatura inicial
-        self.SenHum = SensorHumedad(0,False,80,10)
+        self.SenTemp = SensorTemperatura(20,60,5)  # Temperatura inicial
+        self.SenHum = SensorHumedad(0,80,10)
         self.SensLuz = SensorLuz(False)
-        #self.Valvula(False)
+
 
     def ControlInv(self):
         # Para sensor de temperartura
@@ -79,7 +83,6 @@ class Invernadero:
                 "Temperatura": self.SenTemp.TemperaturaActual,
                 "Humedad": self.SenHum.HumActual,
                 "Luz": self.SensLuz.LuzEstado,
-                "Valvula": self.SenHum.Valvula
             }
 
 
@@ -94,7 +97,7 @@ class ManejoArchivos:
 
     def alta(self, datoss):
         # Cargar los datos existentes
-        with open(self.archivo, 'r') as f:
+        with open(self.archivo, 'r') as f:  #Lectura
             registros = json.load(f)
         # Añadir nuevos datos
         registros.append(datoss)
@@ -152,7 +155,7 @@ def main(page: ft.Page):
                 )
             else:
                 lista_datos.controls.append(ft.Text("No hay datos guardadas."))
-        #limpiar_campos()
+        limpiar_campos()
         page.update()
 
     # Función para limpiar campos de texto
@@ -200,7 +203,7 @@ def main(page: ft.Page):
             indice = int(indice_modificar.value)
             dat_temperatura = float(Temperatura.value)
             dat_humedad = float(Humedad.value)
-            dat_luz = float(Luz.value)
+            dat_luz = str(Luz.value)
 
             invernadero.SenTemp.Actualizar_Temp(dat_temperatura)
             invernadero.SenHum.Actualizar_Hum(dat_humedad)
@@ -210,11 +213,8 @@ def main(page: ft.Page):
                 "Temperatura": dat_temperatura,
                 "Humedad": dat_humedad,
                 "Luz": dat_luz,
-                "Valvula": False  # Puedes añadir control de la válvula si es necesario
             }
             archivo.modificar(indice, nuevo_dato)
-
-            invernadero.modificar([dat_temperatura, dat_humedad, dat_luz])
             archivo.modificar(indice, invernadero.obtener_datos())
             resultado.value = "Dato modificado exitosamente."
             mostrar_datos()
@@ -253,6 +253,7 @@ def main(page: ft.Page):
             )
         elif menu_item == "Consultas":
             mostrar_datos()
+        limpiar_campos()
         page.update()
 
     # Contenedor para los menús y opciones
@@ -260,25 +261,21 @@ def main(page: ft.Page):
     # Interfaz principal
     page.add(
         ft.Text("Control de Invernadero", style="headlineMedium"),
-        ft.Row([ft.ElevatedButton("Guardar Datos", on_click=alta_click),
+        ft.Row([
                 ft.ElevatedButton(text="Alta", on_click=lambda e: cambiar_vista("Alta")),
                 ft.ElevatedButton(text="Baja", on_click=lambda e: cambiar_vista("Baja")),
                 ft.ElevatedButton(text="Modificación", on_click=lambda e: cambiar_vista("Modificación")),
                 ft.ElevatedButton(text="Consultas", on_click=lambda e: cambiar_vista("Consultas"))]),
         container_opciones,
-
-        Temperatura,
-        Humedad,
-        Luz,
         resultado,
-        ft.Text("Datos Guardadas:", style="headlineSmall"),
+        ft.Text("Datos Guardados:", style="headlineSmall"),
         lista_datos
     )
 
     # Inicializa con la lista de datos guardados
     mostrar_datos()
 
-
+ft.app(target=main)
 ##########################################################
 
 '''
@@ -358,5 +355,5 @@ def main(page: ft.Page):
                 print("Opción no válida. Por favor seleccione una opción del menú.")
 '''
 
-ft.app(target=main)
+
 

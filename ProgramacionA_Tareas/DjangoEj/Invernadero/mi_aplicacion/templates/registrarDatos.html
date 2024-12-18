@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Datos del Invernadero</title>
+    <!-- Enlace a Bootstrap 5.0.2 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Registrar Datos del Invernadero</h1>
+
+        <section>
+            <form method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="Temperatura" class="form-label">Temperatura</label>
+                    <input type="number" step="0.01" class="form-control" id="Temperatura" name="Temperatura" placeholder="Temperatura" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Humedad" class="form-label">Humedad</label>
+                    <input type="number" step="0.01" class="form-control" id="Humedad" name="Humedad" placeholder="Humedad" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="Luz" class="form-label">Estado de la Luz</label>
+                    <select class="form-select" id="Luz" name="Luz" required>
+                        <option value="Encendido">Encendido</option>
+                        <option value="Apagado">Apagado</option>
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <button type="submit" class="btn btn-success">Registrar</button>
+                    <a href="{% url 'listarDatos' %}" class="btn btn-info">Ver Lista</a>
+                </div>
+            </form>
+        </section>
+    </div>
+
+    <!-- Enlace a Bootstrap y los iconos de Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0iUeyJ7b3bZ6wNeJymIYgGR+pMbFk5OiyXtZXQBXozDb3L2f" crossorigin="anonymous"></script>
+</body>
+</html>

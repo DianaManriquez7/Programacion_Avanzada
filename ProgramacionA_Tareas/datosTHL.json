@@ -1,0 +1,12 @@
+[
+    {
+        "Temperatura": 30.0,
+        "Humedad": 70.0,
+        "Luz": "Encendida"
+    },
+    {
+        "Temperatura": 15.0,
+        "Humedad": 40.0,
+        "Luz": true
+    }
+]
